@@ -1,0 +1,24 @@
+# HDB Resale Trends Analysis - Required Packages
+# Install with: pip install -r requirements.txt
+
+# Core data manipulation
+numpy>=1.24.0
+pandas>=2.0.0
+polars>=0.20.0
+
+# Data visualization
+matplotlib>=3.7.0
+seaborn>=0.13.0
+
+# Table formatting
+great-tables>=0.8.0
+
+# Statistics & modelling (regression-based valuation approaches)
+scipy>=1.11.0
+scikit-learn>=1.3.0
+
+# API requests
+requests>=2.31.0
+
+# Interactive dashboard (scripts/dashboard.py)
+streamlit>=1.30.0

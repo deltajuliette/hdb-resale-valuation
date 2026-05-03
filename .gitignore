@@ -1,0 +1,24 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Claude Code (project commands stay tracked; local user prefs do not)
+.claude/
+
+# Editors / IDEs
+.vscode/
+.idea/
+*.swp
