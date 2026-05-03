@@ -32,9 +32,9 @@ Edit the configuration block near the top of the notebook to set the subject pro
 SUBJECT_TOWN       = "QUEENSTOWN"
 SUBJECT_FLAT_TYPE  = "4 ROOM"
 SUBJECT_FLAT_MODEL = "Premium Apartment"
-SUBJECT_FLOOR      = 10
-SUBJECT_AREA_SQM   = 83
-SUBJECT_LEASE_LEFT = 94.99
+SUBJECT_FLOOR      = XX # Censored
+SUBJECT_AREA_SQM   = XX # Censored
+SUBJECT_LEASE_LEFT = XX # Censored
 SUBJECT_STREET     = "DAWSON"
 COMPARABLE_TOWNS   = ["QUEENSTOWN", "BUKIT MERAH", "CENTRAL AREA"]
 ```
