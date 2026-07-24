@@ -53,9 +53,18 @@ Same pipeline, exposed as a sidebar of widgets — useful for exploring what-if 
 
 | Path | Purpose |
 |---|---|
+| `hdb_valuation/` | The shared valuation pipeline — single source of truth for the math |
 | `scripts/hdb_resale_trends.ipynb` | Annotated notebook walking through each valuation approach |
-| `scripts/dashboard.py` | Streamlit re-implementation of the same pipeline |
+| `scripts/dashboard.py` | Streamlit UI over the same pipeline |
+| `tests/` | Offline unit tests (`pytest`), backed by `data/fixture.csv` |
 | `requirements.txt` | Python dependencies |
+
+The notebook and dashboard both import `hdb_valuation`, so they can't drift — a change to
+feature engineering, similarity scoring, the regression, or the blend lives in one place.
+
+```bash
+pytest tests/          # offline; no network needed
+```
 
 ## Data caveats
 

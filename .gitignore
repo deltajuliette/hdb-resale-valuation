@@ -15,6 +15,10 @@ env/
 # Streamlit
 .streamlit/secrets.toml
 
+# Data: only the small test fixture is committed; live snapshots stay local
+/data/*
+!/data/fixture.csv
+
 # Claude Code (project commands stay tracked; local user prefs do not)
 .claude/
 
