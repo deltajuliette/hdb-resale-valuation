@@ -49,10 +49,6 @@ jobs:
           python -c "import hdb_valuation as V; V.fetch_raw_csv().to_csv('site/data/snapshot.csv', index=False)"
 
       - uses: actions/configure-pages@v5
-        with:
-          # Turn on GitHub Pages (Actions source) automatically on first run,
-          # so no manual Settings → Pages step is needed.
-          enablement: true
 
       - uses: actions/upload-pages-artifact@v3
         with:
