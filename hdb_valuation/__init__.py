@@ -19,7 +19,7 @@ from .config import (
     Subject,
     months_since_2024,
 )
-from .data import engineer_features, fetch_raw_csv
+from .data import engineer_features, fetch_raw_csv, suggest_subject_from_address
 from .pipeline import (
     blend,
     build_universe,
@@ -35,7 +35,7 @@ __all__ = [
     "INCLUDED_MODELS", "NUM_COLS_NO_TIME", "NUM_COLS_WITH_TIME", "SQM_TO_SQFT",
     "PipelineConfig", "Subject", "months_since_2024",
     # data
-    "engineer_features", "fetch_raw_csv",
+    "engineer_features", "fetch_raw_csv", "suggest_subject_from_address",
     # pipeline
     "blend", "build_universe", "fit_factors",
     "valuation_comparables", "valuation_regression",

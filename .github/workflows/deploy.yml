@@ -1,0 +1,65 @@
+name: Deploy dashboard to GitHub Pages
+
+# Builds a static (stlite/WebAssembly) copy of the Streamlit dashboard and
+# publishes it to GitHub Pages. The data snapshot is fetched here (server-side,
+# where `requests` works) and bundled, so the browser never has to hit
+# data.gov.sg (which CORS would block anyway).
+#
+# One-time setup: repo Settings → Pages → Source = "GitHub Actions".
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 0 * * 1" # weekly (Mondays 00:00 UTC) — refresh the data snapshot
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let a running deploy finish; don't cancel in-progress publishes.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Assemble static site
+        run: |
+          mkdir -p site/scripts site/hdb_valuation site/data
+          cp web/index.html       site/
+          cp scripts/dashboard.py site/scripts/
+          cp hdb_valuation/*.py   site/hdb_valuation/
+
+      - name: Fetch data snapshot from data.gov.sg
+        run: |
+          python -c "import hdb_valuation as V; V.fetch_raw_csv().to_csv('site/data/snapshot.csv', index=False)"
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

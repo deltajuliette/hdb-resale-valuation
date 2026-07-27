@@ -78,6 +78,39 @@ def test_build_universe_unknown_town_is_empty(df):
     assert len(df_comp) == 0
 
 
+# ── suggest_subject_from_address (dashboard "find by address" auto-fill) ──────
+def test_suggest_from_address_matches_data(df):
+    from hdb_valuation import suggest_subject_from_address
+    # Pick a real block/street straight from the fixture so the test is data-driven.
+    row = df.iloc[0]
+    street, block = row["street_name"], str(row["block"])
+    expected_town = df.loc[df["street_name"] == street, "town"].iloc[0]
+
+    sug = suggest_subject_from_address(df, street, block)
+    assert sug["town"] == expected_town
+    assert sug["flat_model"] in set(df["flat_model"])
+    assert sug["area_sqm"] > 0
+    assert 0 <= sug["lease_left"] <= 99
+    assert sug["n_txns"] >= 1
+    assert sug["scope"] in {"block+type", "block", "street+type", "street"}
+
+
+def test_suggest_from_address_flat_type_and_fallback(df):
+    from hdb_valuation import suggest_subject_from_address
+    street = df.iloc[0]["street_name"]
+    ft = df.loc[df["street_name"] == street, "flat_type"].iloc[0]
+    # With a matching flat_type but no block, we fall back to a street-level scope.
+    sug = suggest_subject_from_address(df, street, block="", flat_type=ft)
+    assert sug["town"] == df.loc[df["street_name"] == street, "town"].iloc[0]
+    assert sug["scope"] in {"street+type", "street"}
+
+
+def test_suggest_from_address_unknown_is_empty(df):
+    from hdb_valuation import suggest_subject_from_address
+    assert suggest_subject_from_address(df, "NO SUCH STREET", "999") == {}
+    assert suggest_subject_from_address(df, "", "") == {}
+
+
 # ── fit_factors ──────────────────────────────────────────────────────────────
 def test_fit_factors_keys_and_signs(df_comp_recent):
     factors = fit_factors(df_comp_recent)

@@ -47,7 +47,15 @@ Inputs are validated against the loaded dataset; typos surface a `ValueError` li
 streamlit run scripts/dashboard.py
 ```
 
-Same pipeline, exposed as a sidebar of widgets — useful for exploring what-if scenarios without editing code. The dataset is fetched once per session and cached for 24 hours.
+Same pipeline, exposed as a sidebar of widgets — useful for exploring what-if scenarios without editing code. Town, flat type, flat model, and comparable towns are **dropdowns** (their valid values come from the loaded data, so there are no typos to validate). A **"📍 Find by address"** picker lets you choose a real block/street and auto-fill the subject fields from that address's past sales; every field stays editable afterwards. The page opens on a neutral, data-derived example (no personal defaults).
+
+The dataset is fetched once per session and cached for 24 hours — unless a bundled `data/snapshot.csv` is present (the hosted build ships one; see below), in which case it loads that instead.
+
+### Hosted version (GitHub Pages)
+
+The dashboard is also published as a **static page** — no server needed — by compiling the exact same Streamlit app to WebAssembly with [stlite](https://github.com/whitphx/stlite). The [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) workflow fetches a fresh data snapshot (weekly, plus on every push to `main`), bundles it with the app, and deploys to GitHub Pages. The browser reads the bundled snapshot because live fetching from data.gov.sg is blocked by CORS.
+
+One-time setup: repo **Settings → Pages → Source = "GitHub Actions"**. The site then publishes at `https://<user>.github.io/hdb_price_analysis/`. First load downloads the Python runtime (~tens of MB) and is cached thereafter.
 
 ## Project layout
 
@@ -55,7 +63,9 @@ Same pipeline, exposed as a sidebar of widgets — useful for exploring what-if 
 |---|---|
 | `hdb_valuation/` | The shared valuation pipeline — single source of truth for the math |
 | `scripts/hdb_resale_trends.ipynb` | Annotated notebook walking through each valuation approach |
-| `scripts/dashboard.py` | Streamlit UI over the same pipeline |
+| `scripts/dashboard.py` | Streamlit UI over the same pipeline (runs locally and, via stlite, in the browser) |
+| `web/index.html` | stlite loader that mounts `dashboard.py` as a static page |
+| `.github/workflows/deploy.yml` | Builds the data snapshot + deploys the static dashboard to GitHub Pages |
 | `tests/` | Offline unit tests (`pytest`), backed by `data/fixture.csv` |
 | `requirements.txt` | Python dependencies |
 

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HDB Resale Valuation</title>
+    <!--
+      Static host for the Streamlit dashboard, compiled to WebAssembly via stlite.
+      This page mounts the *real* scripts/dashboard.py + hdb_valuation package
+      (single source of truth) and runs them entirely in the browser (Pyodide).
+      Data comes from a bundled data/snapshot.csv (refreshed by the deploy Action),
+      because live fetching from data.gov.sg is blocked by browser CORS.
+
+      All app/package/data files are served from the same origin (GitHub Pages),
+      so the { url } fetches below are same-origin — no CORS involved.
+    -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@stlite/browser@0.85.1/build/stlite.css"
+    />
+    <style>
+      #loading {
+        font-family: system-ui, -apple-system, sans-serif;
+        max-width: 42rem;
+        margin: 4rem auto;
+        padding: 0 1.5rem;
+        color: #333;
+        line-height: 1.5;
+      }
+      #loading h1 { font-size: 1.4rem; margin-bottom: 0.5rem; }
+      #loading .note { color: #666; font-size: 0.9rem; }
+    </style>
+  </head>
+  <body>
+    <div id="loading">
+      <h1>HDB Resale Valuation</h1>
+      <p>Starting the app in your browser…</p>
+      <p class="note">
+        First load downloads the Python runtime (~tens of MB) and may take a
+        minute. It is cached for subsequent visits.
+      </p>
+    </div>
+    <div id="root"></div>
+
+    <script type="module">
+      import { mount } from "https://cdn.jsdelivr.net/npm/@stlite/browser@0.85.1/build/stlite.js";
+
+      mount(
+        {
+          // Provided by stlite: do NOT list streamlit here. `requests` is omitted
+          // too — the web build reads the bundled snapshot instead of fetching.
+          requirements: [
+            "pandas",
+            "numpy",
+            "scipy",
+            "scikit-learn",
+            "matplotlib",
+            "seaborn",
+          ],
+          entrypoint: "scripts/dashboard.py",
+          // Mirror the repo layout so dashboard.py's `sys.path` insert and the
+          // data/snapshot.csv path resolve exactly as they do locally.
+          files: {
+            "scripts/dashboard.py": { url: "./scripts/dashboard.py" },
+            "hdb_valuation/__init__.py": { url: "./hdb_valuation/__init__.py" },
+            "hdb_valuation/config.py": { url: "./hdb_valuation/config.py" },
+            "hdb_valuation/data.py": { url: "./hdb_valuation/data.py" },
+            "hdb_valuation/pipeline.py": { url: "./hdb_valuation/pipeline.py" },
+            "hdb_valuation/plots.py": { url: "./hdb_valuation/plots.py" },
+            "data/snapshot.csv": { url: "./data/snapshot.csv" },
+          },
+        },
+        document.getElementById("root"),
+      );
+
+      // Streamlit renders into #root; drop the placeholder once it mounts.
+      const root = document.getElementById("root");
+      new MutationObserver((_, obs) => {
+        if (root.childElementCount > 0) {
+          document.getElementById("loading")?.remove();
+          obs.disconnect();
+        }
+      }).observe(root, { childList: true });
+    </script>
+  </body>
+</html>
