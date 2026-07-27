@@ -17,10 +17,6 @@ DATASET_ID = "d_8b84c4ee58e3cfc0ece0d773c8ca6abc"
 # ── Unit conversion ──────────────────────────────────────────────────────────
 SQM_TO_SQFT = 10.7639
 
-# ── Comparable universe ──────────────────────────────────────────────────────
-# Flat models eligible to enter the comparable pool.
-INCLUDED_MODELS = ["Model A", "Premium Apartment"]
-
 # ── Regression feature sets ──────────────────────────────────────────────────
 NUM_COLS_WITH_TIME = ["floor_area_sqm", "storey_mid", "remaining_lease_years", "months_since_2024"]
 NUM_COLS_NO_TIME   = ["floor_area_sqm", "storey_mid", "remaining_lease_years"]

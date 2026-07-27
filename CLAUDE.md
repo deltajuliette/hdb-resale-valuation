@@ -92,9 +92,11 @@ Blended point estimate = simple average of the three; range = widest of the thre
 
 - Plot styling lives in the `DJQC_COLORS` / `DJQC_RC` constants in `config.py`; call
   `plots.apply_style()` and reuse `DJQC_COLORS` for new charts.
-- `INCLUDED_MODELS` filters the comparable universe; `SQM_TO_SQFT = 10.7639` for $/sqft
-  (both in `config.py`). Tunable numbers (similarity weights, `n_comps`, `min_universe`,
-  poll settings) live in `PipelineConfig`.
+- `build_universe` matches comparables to the **subject's own `flat_model`** (apples-to-apples:
+  the approach-1 adjustments correct for floor/lease/area/time but **not** model, so pooling
+  models would inject unadjusted bias). A rare model may make the universe too small — widen the
+  comparable towns, don't mix models. `SQM_TO_SQFT = 10.7639` for $/sqft (`config.py`). Tunable
+  numbers (similarity weights, `n_comps`, `min_universe`, poll settings) live in `PipelineConfig`.
 - The subject property is a `Subject` dataclass (`.sqft`, `.flat_type_label` are derived).
 - Input validation is a **front-end** concern; the package assumes valid inputs. The notebook
   raises `ValueError` on bad values. The dashboard mostly **prevents** invalid input at the source

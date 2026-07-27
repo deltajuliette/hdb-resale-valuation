@@ -167,11 +167,13 @@ def main():
     )
 
     # ── Build comparable universe ──
-    df_comp, df_comp_recent = V.build_universe(df, subject_town, flat_type, comp_towns, V.INCLUDED_MODELS)
+    df_comp, df_comp_recent = V.build_universe(df, subject_town, flat_type, comp_towns, flat_model)
     if len(df_comp_recent) < V.DEFAULT_CONFIG.min_universe:
         st.error(
-            f"Comparable universe too small ({len(df_comp_recent)} txns since 2024). "
-            "Widen the comparable towns or pick a more common flat type."
+            f"Comparable universe too small ({len(df_comp_recent)} txns since 2024 "
+            f"for **{flat_model}** {flat_type_label} in these towns). "
+            "Comparables are matched to the subject's flat model — widen the "
+            "comparable towns, or pick a more common flat type/model."
         )
         st.stop()
 

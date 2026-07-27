@@ -29,12 +29,20 @@ from .config import (
 )
 
 
-def build_universe(df, subject_town, flat_type, comp_towns, included_models):
-    """Split the comparable pool into the full history and the 2024+ subset."""
+def build_universe(df, subject_town, flat_type, comp_towns, flat_model):
+    """Split the comparable pool into the full history and the 2024+ subset.
+
+    Comparables are restricted to the subject's own `flat_model`: the comparables
+    approach adjusts for floor/lease/area/time but *not* model, so pooling models
+    (e.g. valuing an Executive "Apartment" against pricier "Premium Apartment"
+    sales) would inject unadjusted, model-driven bias. Same-model keeps it
+    apples-to-apples; if that leaves too few comps, the front-end widens the
+    comparable towns rather than mixing models.
+    """
     df_comp = df.loc[
         (df["flat_type"] == flat_type)
         & (df["town"].isin(comp_towns))
-        & (df["flat_model"].isin(included_models))
+        & (df["flat_model"] == flat_model)
     ].copy()
     df_comp_recent = df_comp.loc[df_comp["month"].dt.year >= 2024].copy()
     return df_comp, df_comp_recent

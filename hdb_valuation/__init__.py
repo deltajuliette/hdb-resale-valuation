@@ -11,7 +11,6 @@ from .config import (
     DEFAULT_CONFIG,
     DJQC_COLORS,
     DJQC_RC,
-    INCLUDED_MODELS,
     NUM_COLS_NO_TIME,
     NUM_COLS_WITH_TIME,
     SQM_TO_SQFT,
@@ -32,7 +31,7 @@ from . import plots
 __all__ = [
     # config
     "CAT_COLS", "DATASET_ID", "DEFAULT_CONFIG", "DJQC_COLORS", "DJQC_RC",
-    "INCLUDED_MODELS", "NUM_COLS_NO_TIME", "NUM_COLS_WITH_TIME", "SQM_TO_SQFT",
+    "NUM_COLS_NO_TIME", "NUM_COLS_WITH_TIME", "SQM_TO_SQFT",
     "PipelineConfig", "Subject", "months_since_2024",
     # data
     "engineer_features", "fetch_raw_csv", "suggest_subject_from_address",

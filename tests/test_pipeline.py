@@ -60,21 +60,29 @@ def test_lease_string_parsing():
 
 # ── build_universe ───────────────────────────────────────────────────────────
 def test_build_universe_filters(df):
-    from hdb_valuation import INCLUDED_MODELS
     df_comp, df_recent = build_universe(
-        df, "QUEENSTOWN", "4 ROOM", ["QUEENSTOWN", "BUKIT MERAH", "CENTRAL AREA"], INCLUDED_MODELS
+        df, "QUEENSTOWN", "4 ROOM", ["QUEENSTOWN", "BUKIT MERAH", "CENTRAL AREA"], "Model A"
     )
     assert (df_comp["flat_type"] == "4 ROOM").all()
-    assert df_comp["flat_model"].isin(INCLUDED_MODELS).all()
+    # Comparables are restricted to the subject's own flat model.
+    assert (df_comp["flat_model"] == "Model A").all()
     assert (df_recent["month"].dt.year >= 2024).all()
     assert len(df_recent) <= len(df_comp)
     # Enough recent rows to exceed the trust threshold (guards the fixture).
     assert len(df_recent) >= DEFAULT_CONFIG.min_universe
 
 
+def test_build_universe_matches_subject_model(df):
+    """A model absent from the comp towns yields an empty universe (not other models)."""
+    df_comp, _ = build_universe(
+        df, "QUEENSTOWN", "4 ROOM", ["QUEENSTOWN", "BUKIT MERAH", "CENTRAL AREA"], "Maisonette"
+    )
+    # Only same-model rows are ever included; none leak in from other models.
+    assert df_comp["flat_model"].eq("Maisonette").all()
+
+
 def test_build_universe_unknown_town_is_empty(df):
-    from hdb_valuation import INCLUDED_MODELS
-    df_comp, _ = build_universe(df, "NOWHERE", "4 ROOM", ["NOWHERE"], INCLUDED_MODELS)
+    df_comp, _ = build_universe(df, "NOWHERE", "4 ROOM", ["NOWHERE"], "Model A")
     assert len(df_comp) == 0
 
 

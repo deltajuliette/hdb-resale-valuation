@@ -29,16 +29,18 @@ def df(raw_df) -> pd.DataFrame:
 
 @pytest.fixture
 def subject() -> Subject:
+    # Model A is the dominant 4-room model in the fixture, so same-model
+    # comparables (build_universe now matches the subject's flat_model) leave a
+    # universe comfortably above min_universe.
     return Subject(
-        town="QUEENSTOWN", flat_type="4 ROOM", flat_model="Premium Apartment",
+        town="QUEENSTOWN", flat_type="4 ROOM", flat_model="Model A",
         floor=10, area_sqm=83.0, lease_left=94.99, street="DAWSON",
     )
 
 
 @pytest.fixture
 def universe(df):
-    from hdb_valuation import INCLUDED_MODELS
-    return build_universe(df, "QUEENSTOWN", "4 ROOM", COMP_TOWNS, INCLUDED_MODELS)
+    return build_universe(df, "QUEENSTOWN", "4 ROOM", COMP_TOWNS, "Model A")
 
 
 @pytest.fixture
